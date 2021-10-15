@@ -1,10 +1,33 @@
+version: '2'
 services:
   redis:
+    container_name: redis
     image: redis
-    ports: 
+    ports:
       - 6379:6379
     deploy:
       resources:
         limits:
           memory: 500m
-  go-redis:
+          cpus: "0.5"
+    networks:
+        back_end:
+            ipv4_address: 172.28.0.2
+  web:
+    image: goredis
+    container_name: go-redis
+    ports:
+      - 7788:7788
+    depends_on:
+      - redis
+    networks:
+            back_end:
+                ipv4_address: 172.28.0.3
+networks:
+    back_end:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.28.0.0/16
+                  gateway: 172.28.0.1

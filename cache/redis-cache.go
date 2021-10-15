@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"go-redis/model"
 	"time"
 
@@ -26,6 +27,7 @@ func NewRedisCache(host string, db int, exp time.Duration) *redisCache {
 }
 
 func (cache *redisCache) getClient() *redis.Client {
+	fmt.Println(cache.host)
 	return redis.NewClient(&redis.Options{
 		Addr:     cache.host,
 		Password: "",

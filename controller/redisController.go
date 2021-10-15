@@ -9,10 +9,10 @@ import (
 )
 
 //Select 1 60s
-var postCache1 cache.PostCache = cache.NewRedisCache("localhost:6379", 1, 60)
+var postCache1 cache.PostCache = cache.NewRedisCache("172.28.0.2:6379", 1, 60)
 
 //Select 2 360s
-var postCache2 cache.PostCache = cache.NewRedisCache("localhost:6379", 2, 360)
+var postCache2 cache.PostCache = cache.NewRedisCache("172.28.0.2:6379", 2, 360)
 
 func SetRedis(ctx *gin.Context) {
 	user := &model.User{}
