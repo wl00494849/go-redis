@@ -41,5 +41,9 @@ func LrangeRedis(ctx *gin.Context) {
 	intput := ctx.Query("key")
 	data := postCache2.Lrange(intput, 0, -1)
 
+	if data == nil {
+		ctx.JSON(401, "data not found")
+	}
+
 	ctx.JSON(200, data)
 }

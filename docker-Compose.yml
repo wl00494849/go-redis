@@ -21,8 +21,8 @@ services:
     depends_on:
       - redis
     networks:
-            back_end:
-                ipv4_address: 172.28.0.3
+        back_end:
+            ipv4_address: 172.28.0.3
 networks:
     back_end:
         driver: bridge
