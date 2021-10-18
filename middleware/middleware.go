@@ -1,12 +1,16 @@
 package middleware
 
 import (
+	"fmt"
+	"go-redis/controller"
+
 	"github.com/gin-gonic/gin"
 	c "github.com/rs/cors/wrapper/gin"
 )
 
 func Setup(app *gin.Engine) {
 	app.Use(cors())
+	app.Use(choseRedis())
 }
 
 func cors() gin.HandlerFunc {
@@ -18,4 +22,13 @@ func cors() gin.HandlerFunc {
 			"http://localhost:5000",
 		},
 	})
+}
+
+func choseRedis() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		pattern := ctx.GetHeader("Pattern")
+		fmt.Println(pattern)
+		controller.TurnPostCache(pattern)
+		ctx.Next()
+	}
 }
