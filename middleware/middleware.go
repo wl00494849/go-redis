@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"go-redis/controller"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +26,6 @@ func cors() gin.HandlerFunc {
 func choseRedis() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		pattern := ctx.GetHeader("Pattern")
-		fmt.Println(pattern)
 		controller.TurnPostCache(pattern)
 		ctx.Next()
 	}

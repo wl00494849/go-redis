@@ -13,21 +13,24 @@ type redisPwdCache struct {
 	host    string
 	db      int
 	expires time.Duration
+	pwd     string
 }
 
-func NewPwdRedisCache(host string, db int, exp time.Duration) *redisPwdCache {
+func NewPwdRedisCache(host string, db int, pwd string, exp time.Duration) *redisPwdCache {
 	return &redisPwdCache{
 		host:    host,
 		db:      db,
 		expires: exp,
+		pwd:     pwd,
 	}
 }
 
 func (cache *redisPwdCache) getClient() *redis.Client {
 	fmt.Println(cache.host)
 	return redis.NewClient(&redis.Options{
-		Addr: cache.host,
-		DB:   cache.db,
+		Addr:     cache.host,
+		DB:       cache.db,
+		Password: cache.pwd,
 	})
 }
 
