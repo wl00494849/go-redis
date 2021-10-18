@@ -41,9 +41,7 @@ func (cache *redisCache) Set(key string, value *model.User) {
 	json, err := json.Marshal(value)
 	errCheck(err)
 
-	if data := client.Get(ctx, key); data == nil {
-		client.Set(ctx, key, json, cache.expires*time.Second)
-	}
+	client.Set(ctx, key, json, cache.expires*time.Second)
 }
 
 func (cache *redisCache) Get(key string) *model.User {
