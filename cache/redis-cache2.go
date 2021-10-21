@@ -13,7 +13,6 @@ type redisPwdCache struct {
 	host    string
 	db      int
 	expires time.Duration
-	pwd     string
 }
 
 func NewPwdRedisCache(host string, db int, pwd string, exp time.Duration) *redisPwdCache {
@@ -21,44 +20,35 @@ func NewPwdRedisCache(host string, db int, pwd string, exp time.Duration) *redis
 		host:    host,
 		db:      db,
 		expires: exp,
-		pwd:     pwd,
 	}
 }
 
 func (cache *redisPwdCache) getClient() *redis.Client {
 	fmt.Println(cache.host)
 	return redis.NewClient(&redis.Options{
-		Addr:     cache.host,
-		DB:       cache.db,
-		Password: cache.pwd,
+		Addr: cache.host,
+		DB:   cache.db,
 	})
 }
 
 func (cache *redisPwdCache) Set(key string, value *model.User) {
-	client := cache.getClient()
 
-	json, err := json.Marshal(value)
-	errCheck(err)
-
-	client.Set(ctx, key, json, cache.expires*time.Second)
 }
 
 func (cache *redisPwdCache) Get(key string) *model.User {
-	client := cache.getClient()
 	user := &model.User{}
-
-	val, _ := client.Get(ctx, key).Result()
-	json.Unmarshal([]byte(val), user)
 	return user
 }
 
-func (cache *redisPwdCache) Push(key string, value *model.User) {
+func (cache *redisPwdCache) Push(key string, value *[]model.User) {
 	client := cache.getClient()
-	value.Id = value.Id + 2
-	json, err := json.Marshal(value)
-	errCheck(err)
-
-	client.LPush(ctx, key, json)
+	for _, user := range *value {
+		//user id *2*4
+		user.Id = user.Id << 4
+		json, err := json.Marshal(user)
+		errCheck(err)
+		client.LPush(ctx, key, json)
+	}
 }
 
 func (cache *redisPwdCache) Lrange(key string, start int64, stop int64) *[]model.User {

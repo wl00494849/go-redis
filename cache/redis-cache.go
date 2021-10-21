@@ -52,12 +52,13 @@ func (cache *redisBasicCache) Get(key string) *model.User {
 	return user
 }
 
-func (cache *redisBasicCache) Push(key string, value *model.User) {
+func (cache *redisBasicCache) Push(key string, value *[]model.User) {
 	client := cache.getClient()
-	json, err := json.Marshal(value)
-	errCheck(err)
-
-	client.LPush(ctx, key, json)
+	for _, user := range *value {
+		json, err := json.Marshal(user)
+		errCheck(err)
+		client.LPush(ctx, key, json)
+	}
 }
 
 func (cache *redisBasicCache) Lrange(key string, start int64, stop int64) *[]model.User {

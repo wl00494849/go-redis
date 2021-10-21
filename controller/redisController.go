@@ -14,7 +14,7 @@ var postCache *cache.PostCache
 var redis1 = cache.NewPostCache(cache.NewBasicRedisCache("172.28.0.2:6379", 1, 60))
 
 //Select 2 360s
-var redis2 = cache.NewPostCache(cache.NewPwdRedisCache("172.28.0.2:6379", 2, "7414", 360))
+var redis2 = cache.NewPostCache(cache.NewPwdRedisCache("172.28.0.2:6379", 2, "6666", 360))
 
 func TurnPostCache(pattern string) {
 	switch pattern {
@@ -44,9 +44,7 @@ func GetRedis(ctx *gin.Context) {
 func PushRedis(ctx *gin.Context) {
 	users := &[]model.User{}
 	ctx.ShouldBindJSON(&users)
-	for _, user := range *users {
-		postCache.Push("User", &user)
-	}
+	postCache.Push("User", users)
 
 	ctx.JSON(200, users)
 }

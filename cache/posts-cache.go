@@ -8,7 +8,7 @@ type PostCache struct {
 type ManagerCache interface {
 	Set(key string, value *model.User)
 	Get(key string) *model.User
-	Push(key string, value *model.User)
+	Push(key string, value *[]model.User)
 	Lrange(key string, start int64, stop int64) *[]model.User
 }
 
@@ -24,7 +24,7 @@ func (p *PostCache) Get(key string) *model.User {
 	return p.mc.Get(key)
 }
 
-func (p *PostCache) Push(key string, value *model.User) {
+func (p *PostCache) Push(key string, value *[]model.User) {
 	p.mc.Push(key, value)
 }
 
