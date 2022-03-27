@@ -7,7 +7,7 @@ RUN apt-get update \
 
 RUN cd /go/src/go-redis \
     && go get github.com/go-sql-driver/mysql \
-    && go get github.com/rs/cors \
+    && go get github.com/rs/cors/wrapper/gin \
     && go get github.com/gin-gonic/gin \
     && go get github.com/go-redis/redis/v8 \
     && go build
