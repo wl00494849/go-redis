@@ -26,7 +26,7 @@ func cors() gin.HandlerFunc {
 func choseRedis() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		pattern := ctx.GetHeader("Pattern")
-		go controller.TurnPostCache(pattern)
+		controller.TurnPostCache(pattern)
 		ctx.Next()
 	}
 }

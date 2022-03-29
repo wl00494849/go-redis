@@ -40,13 +40,13 @@ func (cache *redisBasicCache) Set(key string, value map[string]string) {
 	client.Set(ctx, key, json, cache.expires*time.Second)
 }
 
-func (cache *redisBasicCache) Get(key string) map[string]string {
+func (cache *redisBasicCache) Get(key string) *map[string]string {
 	client := cache.getClient()
 	user := make(map[string]string)
 
 	val, _ := client.Get(ctx, key).Result()
 	json.Unmarshal([]byte(val), &user)
-	return user
+	return &user
 }
 
 func (cache *redisBasicCache) Push(key string, value *[]map[string]string) {

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"go-redis/cache"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,12 +11,15 @@ var postCache *cache.PostCache
 
 //Select 1 60s
 var redis1 = cache.NewPostCache(cache.NewBasicRedisCache("172.28.0.2:6379", 1))
+var redis2 = cache.NewPostCache(cache.NewDistributedRedisCache("172.28.0.2:6379", 2, 60*time.Second))
 
 //Select 2 360s
 func TurnPostCache(pattern string) {
 	switch pattern {
 	case "1":
 		postCache = redis1
+	case "2":
+		postCache = redis2
 	default:
 		postCache = redis1
 	}

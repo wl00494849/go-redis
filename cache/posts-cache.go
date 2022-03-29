@@ -5,7 +5,7 @@ type PostCache struct {
 }
 type ManagerCache interface {
 	Set(key string, value map[string]string)
-	Get(key string) map[string]string
+	Get(key string) *map[string]string
 	Push(key string, value *[]map[string]string)
 	Lrange(key string, start int64, stop int64) *[]map[string]string
 }
@@ -18,7 +18,7 @@ func (p *PostCache) Set(key string, value map[string]string) {
 	p.mc.Set(key, value)
 }
 
-func (p *PostCache) Get(key string) map[string]string {
+func (p *PostCache) Get(key string) *map[string]string {
 	return p.mc.Get(key)
 }
 
