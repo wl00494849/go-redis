@@ -14,14 +14,10 @@ var postCache *cache.PostCache
 var redis1 = cache.NewPostCache(cache.NewBasicRedisCache("172.28.0.2:6379", 1, 60))
 
 //Select 2 360s
-var redis2 = cache.NewPostCache(cache.NewPwdRedisCache("172.28.0.2:6379", 2, "6666", 360))
-
 func TurnPostCache(pattern string) {
 	switch pattern {
 	case "1":
 		postCache = redis1
-	case "2":
-		postCache = redis2
 	default:
 		postCache = redis1
 	}
