@@ -2,8 +2,6 @@ package controller
 
 import (
 	"go-redis/cache"
-	"go-redis/model"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +9,7 @@ import (
 var postCache *cache.PostCache
 
 //Select 1 60s
-var redis1 = cache.NewPostCache(cache.NewBasicRedisCache("172.28.0.2:6379", 1, 60))
+var redis1 = cache.NewPostCache(cache.NewBasicRedisCache("172.28.0.2:6379", 1))
 
 //Select 2 360s
 func TurnPostCache(pattern string) {
@@ -24,9 +22,9 @@ func TurnPostCache(pattern string) {
 }
 
 func SetRedis(ctx *gin.Context) {
-	user := &model.User{}
+	user := make(map[string]string)
 	ctx.ShouldBindJSON(&user)
-	postCache.Set(strconv.Itoa(user.Id), user)
+	postCache.Set(user["Id"], user)
 	ctx.JSON(200, user)
 }
 
@@ -38,9 +36,9 @@ func GetRedis(ctx *gin.Context) {
 }
 
 func PushRedis(ctx *gin.Context) {
-	users := &[]model.User{}
+	users := make([]map[string]string, 0)
 	ctx.ShouldBindJSON(&users)
-	postCache.Push("User", users)
+	postCache.Push("User", &users)
 
 	ctx.JSON(200, users)
 }

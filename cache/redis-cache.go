@@ -3,8 +3,6 @@ package cache
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"go-redis/model"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -18,23 +16,22 @@ type redisBasicCache struct {
 
 var ctx = context.Background()
 
-func NewBasicRedisCache(host string, db int, exp time.Duration) *redisBasicCache {
+func NewBasicRedisCache(host string, db int) *redisBasicCache {
 	return &redisBasicCache{
 		host:    host,
 		db:      db,
-		expires: exp,
+		expires: 300,
 	}
 }
 
 func (cache *redisBasicCache) getClient() *redis.Client {
-	fmt.Println(cache.host)
 	return redis.NewClient(&redis.Options{
 		Addr: cache.host,
 		DB:   cache.db,
 	})
 }
 
-func (cache *redisBasicCache) Set(key string, value *model.User) {
+func (cache *redisBasicCache) Set(key string, value map[string]string) {
 	client := cache.getClient()
 
 	json, err := json.Marshal(value)
@@ -43,16 +40,16 @@ func (cache *redisBasicCache) Set(key string, value *model.User) {
 	client.Set(ctx, key, json, cache.expires*time.Second)
 }
 
-func (cache *redisBasicCache) Get(key string) *model.User {
+func (cache *redisBasicCache) Get(key string) map[string]string {
 	client := cache.getClient()
-	user := &model.User{}
+	user := make(map[string]string)
 
 	val, _ := client.Get(ctx, key).Result()
-	json.Unmarshal([]byte(val), user)
+	json.Unmarshal([]byte(val), &user)
 	return user
 }
 
-func (cache *redisBasicCache) Push(key string, value *[]model.User) {
+func (cache *redisBasicCache) Push(key string, value *[]map[string]string) {
 	client := cache.getClient()
 	for _, user := range *value {
 		json, err := json.Marshal(user)
@@ -61,16 +58,16 @@ func (cache *redisBasicCache) Push(key string, value *[]model.User) {
 	}
 }
 
-func (cache *redisBasicCache) Lrange(key string, start int64, stop int64) *[]model.User {
+func (cache *redisBasicCache) Lrange(key string, start int64, stop int64) *[]map[string]string {
 	client := cache.getClient()
-	users := make([]model.User, 0)
+	users := make([]map[string]string, 0)
 	jsonString, err := client.LRange(ctx, key, start, stop).Result()
 	errCheck(err)
 
 	for _, str := range jsonString {
-		user := &model.User{}
+		user := make(map[string]string)
 		json.Unmarshal([]byte(str), &user)
-		users = append(users, *user)
+		users = append(users, user)
 	}
 
 	return &users
