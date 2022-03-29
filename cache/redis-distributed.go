@@ -36,7 +36,7 @@ func (cache *redisDistributedCache) Set(key string, value map[string]string) {
 	val, _ := json.Marshal(value)
 
 	if string(val) == string(exist) {
-		client.Expire(ctx, key, 300)
+		client.Expire(ctx, key, cache.expires)
 		fmt.Println("key reset time")
 	} else if string(exist) == "{}" {
 		client.Set(ctx, key, val, cache.expires)
